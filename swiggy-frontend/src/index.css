@@ -1,68 +1,83 @@
+/* ── CSS Variables ── */
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  --bg-base:       #0f0a05;
+  --bg-surface:    #1a1208;
+  --gold:          #d4a853;
+  --gold-light:    #e0b85e;
+  --gold-dark:     #a07832;
+  --cream:         #f5e6cc;
+  --cream-dim:     rgba(245, 230, 204, 0.6);
+  --cream-muted:   rgba(245, 230, 204, 0.35);
+  --border:        rgba(212, 168, 83, 0.15);
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
 
 body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
+  background: var(--bg-base);
+  color: var(--cream);
+  font-family: 'DM Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+/* Subtle texture overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(ellipse at 20% 50%, rgba(212, 168, 83, 0.03) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(160, 120, 50, 0.03) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
+#root { position: relative; z-index: 1; }
+
+.app { min-height: 100vh; display: flex; flex-direction: column; }
+
+.app-main { flex: 1; }
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-base); }
+::-webkit-scrollbar-thumb {
+  background: rgba(212, 168, 83, 0.25);
+  border-radius: 3px;
 }
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+::-webkit-scrollbar-thumb:hover { background: rgba(212, 168, 83, 0.4); }
+
+/* ── Global Loading Screen ── */
+.loading-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+.loading-spinner {
+  width: 40px; height: 40px;
+  border: 3px solid rgba(212, 168, 83, 0.15);
+  border-top-color: #d4a853;
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Selection ── */
+::selection {
+  background: rgba(212, 168, 83, 0.25);
+  color: #f5e6cc;
+}
+
+/* ── Focus visible ── */
+:focus-visible {
+  outline: 2px solid rgba(212, 168, 83, 0.5);
+  outline-offset: 2px;
 }
