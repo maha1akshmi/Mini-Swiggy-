@@ -1,0 +1,72 @@
+﻿============================================
+  FULL FLOW TEST: Admin + Foods + Cart + Order
+============================================
+
+[1] Setting admin@test.com role to ADMIN in database...
+  Done (attempted DB update)
+
+[2] Logging in as admin@test.com...
+  PASS: Admin login successful, token obtained
+
+[3] Logging in as testuser@test.com...
+  PASS: User login successful
+
+[4] Creating foods as ADMIN...
+  Create Pizza: Status=201
+    PASS: Food created - ID=1
+  Create Biryani: Status=201
+    PASS: Food created - ID=2
+  Create Burger: Status=201
+    PASS: Food created - ID=3
+
+[5] Testing food retrieval...
+  GET /foods: Status=200, Count=3
+    PASS
+  GET /foods?category=Pizza: Status=200, Count=1
+  GET /foods?search=chicken: Status=200, Count=1
+  GET /foods/categories: Status=200, Categories=Biryani, Burgers, Pizza
+  GET /foods/1: Status=200, Name=Margherita Pizza
+    PASS
+
+[6] Updating food as ADMIN...
+  PUT /foods/1: Status=200
+    PASS: Price updated to 14.99
+
+[7] Cart operations as USER...
+  GET /cart: Status=200, Items=0
+    PASS
+  POST /cart/add (Pizza x2): Status=200
+    PASS: Cart total=29.98, items=2
+  POST /cart/add (Biryani x1): Status=200
+    PASS: Cart total=45.97, items=3
+  PUT /cart/update/2 (qty->3): Status=200
+    PASS: Updated total=77.95
+  DELETE /cart/remove/2: Status=200
+    PASS: Items left=2
+  Re-added biryani for order test
+
+[8] Order operations as USER...
+  POST /orders/place: Status=201
+    PASS: Order ID=1, Status=PLACED, Total=
+  GET /orders: Status=200, Count=1
+    PASS
+  GET /orders/1: Status=200, Items=2
+    PASS
+
+[9] Admin updates order status...
+  PUT /orders/1/status -> CONFIRMED: Status=200
+    PASS: New status=CONFIRMED
+
+[10] Delete food as ADMIN...
+  DELETE /foods/3: Status=204
+    PASS: Food deleted
+  GET /foods/3 (verify deleted): Status=404
+    PASS: Confirmed deleted
+
+[11] Verify cart is empty after order...
+  GET /cart: Items=0
+    PASS: Cart cleared after order
+
+============================================
+  FULL FLOW TEST COMPLETE
+============================================

@@ -12,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CartDTO {
+    private String message;
     private Long id;
     private Long userId;
     private List<CartItemDTO> items;

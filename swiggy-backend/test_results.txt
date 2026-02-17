@@ -1,0 +1,245 @@
+﻿========================================
+  MINI-SWIGGY BACKEND ENDPOINT TESTS
+  Server: http://localhost:8081/api
+========================================
+
+--- AUTH ENDPOINTS ---
+
+[PASS] POST /api/auth/register (new user)
+  POST http://localhost:8081/api/auth/register
+  Status: 201 (expected: 201/200/409)
+  Response: {"token":"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0dXNlckB0ZXN0LmNvbSIsImlhdCI6MTc3MTMzMTAyMCwiZXhwIjoxNzcxNDE3NDIwfQ.f4YKh7m5H1WKgEFvtGx6-ZsTKvroy2-MnVbMvuuuzVk","tokenType":"Bearer","userId":1,"name":"TestUser","email":"testuser@test.com","role":"USER"}
+
+[PASS] POST /api/auth/register (duplicate - should fail)
+  POST http://localhost:8081/api/auth/register
+  Status: 400 (expected: 400/409/500)
+  Response: {"timestamp":"2026-02-17T17:53:40.2078644","status":400,"message":"Email already registered: testuser@test.com"}
+
+[PASS] POST /api/auth/register (validation error)
+  POST http://localhost:8081/api/auth/register
+  Status: 400 (expected: 400)
+  Response: {"fieldErrors":{"password":"Password must be at least 6 characters","name":"Name is required","email":"Invalid email format"},"error":"Validation Failed","timestamp":"2026-02-17T17:53:40.3873225","status":400}
+
+Name                 
+----                 
+Label                
+Status               
+Pass                 
+Content              
+
+[PASS] POST /api/auth/login
+  POST http://localhost:8081/api/auth/login
+  Status: 200 (expected: 200)
+  Response: {"token":"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0dXNlckB0ZXN0LmNvbSIsImlhdCI6MTc3MTMzMTAyMCwiZXhwIjoxNzcxNDE3NDIwfQ.f4YKh7m5H1WKgEFvtGx6-ZsTKvroy2-MnVbMvuuuzVk","tokenType":"Bearer","userId":1,"name":"TestUser","email":"testuser@test.com","role":"USER"}
+  >> JWT Token obtained: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiO...
+
+[PASS] POST /api/auth/login (wrong password)
+  POST http://localhost:8081/api/auth/login
+  Status: 401 (expected: 401/403)
+  Response: {"timestamp":"2026-02-17T17:53:40.6148209","status":401,"message":"Invalid email or password"}
+Label                
+Status               
+Pass                 
+Content              
+
+[PASS] GET /api/auth/me (authenticated)
+  GET http://localhost:8081/api/auth/me
+  Status: 200 (expected: 200)
+  Response: {"token":null,"tokenType":"Bearer","userId":1,"name":"TestUser","email":"testuser@test.com","role":"USER"}
+Label                
+Status               
+Pass                 
+Content              
+
+[FAIL] GET /api/auth/me (no token - should fail)
+  GET http://localhost:8081/api/auth/me
+  Status: 500 (expected: 401/403)
+  Response: {"timestamp":"2026-02-17T17:53:40.8906709","status":500,"message":"An unexpected error occurred: Cannot invoke \"org.springframework.security.core.Authentication.getName()\" because \"authentication\" is null"}
+Label                
+Status               
+Pass                 
+Content              
+
+[PASS] POST /api/auth/register (admin user)
+  POST http://localhost:8081/api/auth/register
+  Status: 201 (expected: 201/200/409)
+  Response: {"token":"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkB0ZXN0LmNvbSIsImlhdCI6MTc3MTMzMTAyMSwiZXhwIjoxNzcxNDE3NDIxfQ.fYczh2onNjrbJCBqYbeoip-nPn5MFrp6KvIaxLTxzl8","tokenType":"Bearer","userId":2,"name":"AdminUser","email":"admin@test.com","role":"USER"}
+
+--- FOOD ENDPOINTS (Public) ---
+
+[PASS] GET /api/foods (all foods)
+  GET http://localhost:8081/api/foods
+  Status: 200 (expected: 200)
+  Response: []
+Label                
+Status               
+Pass                 
+Content              
+
+[PASS] GET /api/foods?category=Pizza
+  GET http://localhost:8081/api/foods?category=Pizza
+  Status: 200 (expected: 200)
+  Response: []
+Label                
+Status               
+Pass                 
+Content              
+
+[PASS] GET /api/foods?search=chicken
+  GET http://localhost:8081/api/foods?search=chicken
+  Status: 200 (expected: 200)
+  Response: []
+Label                
+Status               
+Pass                 
+Content              
+
+[PASS] GET /api/foods/categories
+  GET http://localhost:8081/api/foods/categories
+  Status: 200 (expected: 200)
+  Response: []
+Label                
+Status               
+Pass                 
+Content              
+
+[PASS] GET /api/foods/1
+  GET http://localhost:8081/api/foods/1
+  Status: 404 (expected: 200/404)
+  Response: {"timestamp":"2026-02-17T17:53:41.2208496","status":404,"message":"Food not found with id: '1'"}
+Label                
+Status               
+Pass                 
+Content              
+
+--- FOOD ENDPOINTS (Admin) ---
+
+[PASS] POST /api/foods (regular user - should fail 403)
+  POST http://localhost:8081/api/foods
+  Status: 403 (expected: 403)
+  Response: 
+Label                
+Status               
+Pass                 
+Content              
+
+[PASS] POST /api/foods (no auth - should fail)
+  POST http://localhost:8081/api/foods
+  Status: 403 (expected: 401/403)
+  Response: 
+Label                
+Status               
+Pass                 
+Content              
+
+--- CART ENDPOINTS ---
+
+[PASS] GET /api/cart (get user cart)
+  GET http://localhost:8081/api/cart
+  Status: 200 (expected: 200)
+  Response: {"id":1,"userId":1,"items":[],"totalPrice":0,"totalItems":0}
+Label                
+Status               
+Pass                 
+Content              
+
+[PASS] GET /api/cart (no auth - should fail)
+  GET http://localhost:8081/api/cart
+  Status: 403 (expected: 401/403)
+  Response: 
+Label                
+Status               
+Pass                 
+Content              
+
+[PASS] POST /api/cart/add (add food to cart)
+  POST http://localhost:8081/api/cart/add
+  Status: 404 (expected: 200/404)
+  Response: {"timestamp":"2026-02-17T17:53:41.4091587","status":404,"message":"Food not found with id: '1'"}
+
+[PASS] PUT /api/cart/update/1 (update quantity)
+  PUT http://localhost:8081/api/cart/update/1
+  Status: 404 (expected: 200/404)
+  Response: {"timestamp":"2026-02-17T17:53:41.4422838","status":404,"message":"CartItem not found with id: '1'"}
+Label                
+Status               
+Pass                 
+Content              
+
+[PASS] DELETE /api/cart/remove/1 (remove item)
+  DELETE http://localhost:8081/api/cart/remove/1
+  Status: 404 (expected: 200/404)
+  Response: {"timestamp":"2026-02-17T17:53:41.4671808","status":404,"message":"CartItem not found with id: '1'"}
+Label                
+Status               
+Pass                 
+Content              
+
+[PASS] DELETE /api/cart/clear
+  DELETE http://localhost:8081/api/cart/clear
+  Status: 204 (expected: 204/200)
+  Response: 
+Label                
+Status               
+Pass                 
+Content              
+
+--- ORDER ENDPOINTS ---
+
+[PASS] GET /api/orders (my orders)
+  GET http://localhost:8081/api/orders
+  Status: 200 (expected: 200)
+  Response: []
+Label                
+Status               
+Pass                 
+Content              
+
+[PASS] GET /api/orders (no auth - should fail)
+  GET http://localhost:8081/api/orders
+  Status: 403 (expected: 401/403)
+  Response: 
+Label                
+Status               
+Pass                 
+Content              
+
+[PASS] POST /api/orders/place
+  POST http://localhost:8081/api/orders/place
+  Status: 400 (expected: 201/200/400)
+  Response: {"timestamp":"2026-02-17T17:53:41.6734561","status":400,"message":"Cart is empty. Add items before placing an order."}
+
+[PASS] GET /api/orders/1
+  GET http://localhost:8081/api/orders/1
+  Status: 404 (expected: 200/404)
+  Response: {"timestamp":"2026-02-17T17:53:41.6981278","status":404,"message":"Order not found with id: '1'"}
+Label                
+Status               
+Pass                 
+Content              
+
+[PASS] PUT /api/orders/1/status (regular user - should fail 403)
+  PUT http://localhost:8081/api/orders/1/status
+  Status: 403 (expected: 403)
+  Response: 
+Label                
+Status               
+Pass                 
+Content              
+
+[PASS] PUT /api/orders/1/status (no auth - should fail)
+  PUT http://localhost:8081/api/orders/1/status
+  Status: 403 (expected: 401/403)
+  Response: 
+Label                
+Status               
+Pass                 
+Content              
+
+========================================
+  TEST SUMMARY
+========================================
+All endpoint tests completed!
+Review results above for any FAIL indicators.
+
+

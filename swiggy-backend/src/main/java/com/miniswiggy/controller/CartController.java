@@ -24,21 +24,23 @@ public class CartController {
 
     @PostMapping("/add")
     public ResponseEntity<CartDTO> addToCart(Authentication authentication,
-                                             @Valid @RequestBody AddToCartRequest request) {
-        return ResponseEntity.ok(cartService.addToCart(authentication.getName(), request));
+            @Valid @RequestBody AddToCartRequest request) {
+        CartDTO cart = cartService.addToCart(authentication.getName(), request);
+        cart.setMessage("Food added to cart successfully");
+        return ResponseEntity.ok(cart);
     }
 
     @PutMapping("/update/{cartItemId}")
     public ResponseEntity<CartDTO> updateCartItem(Authentication authentication,
-                                                  @PathVariable Long cartItemId,
-                                                  @Valid @RequestBody UpdateCartRequest request) {
+            @PathVariable Long cartItemId,
+            @Valid @RequestBody UpdateCartRequest request) {
         return ResponseEntity.ok(
                 cartService.updateCartItem(authentication.getName(), cartItemId, request));
     }
 
     @DeleteMapping("/remove/{cartItemId}")
     public ResponseEntity<CartDTO> removeFromCart(Authentication authentication,
-                                                  @PathVariable Long cartItemId) {
+            @PathVariable Long cartItemId) {
         return ResponseEntity.ok(
                 cartService.removeFromCart(authentication.getName(), cartItemId));
     }

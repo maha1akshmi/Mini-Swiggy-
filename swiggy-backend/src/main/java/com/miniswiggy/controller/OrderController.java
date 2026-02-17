@@ -23,8 +23,9 @@ public class OrderController {
 
     @PostMapping("/place")
     public ResponseEntity<OrderDTO> placeOrder(Authentication authentication,
-                                               @Valid @RequestBody PlaceOrderRequest request) {
+            @Valid @RequestBody PlaceOrderRequest request) {
         OrderDTO order = orderService.placeOrder(authentication.getName(), request);
+        order.setMessage("Order placed successfully");
         return ResponseEntity.status(HttpStatus.CREATED).body(order);
     }
 
@@ -35,14 +36,14 @@ public class OrderController {
 
     @GetMapping("/{id}")
     public ResponseEntity<OrderDTO> getOrderById(Authentication authentication,
-                                                 @PathVariable Long id) {
+            @PathVariable Long id) {
         return ResponseEntity.ok(orderService.getOrderById(authentication.getName(), id));
     }
 
     @PutMapping("/{id}/status")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<OrderDTO> updateOrderStatus(@PathVariable Long id,
-                                                      @Valid @RequestBody UpdateOrderStatusRequest request) {
+            @Valid @RequestBody UpdateOrderStatusRequest request) {
         return ResponseEntity.ok(orderService.updateOrderStatus(id, request.getStatus()));
     }
 }

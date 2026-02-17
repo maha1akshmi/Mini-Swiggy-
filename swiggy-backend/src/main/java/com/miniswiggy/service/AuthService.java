@@ -40,18 +40,16 @@ public class AuthService {
 
         // Auto-login after register
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
-        );
+                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String token = jwtUtil.generateToken(userDetails);
 
-        return buildAuthResponse(savedUser, token);
+        return buildAuthResponse(savedUser, token, "Registered successfully");
     }
 
     public AuthResponse login(LoginRequest request) {
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
-        );
+                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String token = jwtUtil.generateToken(userDetails);
@@ -59,17 +57,18 @@ public class AuthService {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new BadRequestException("User not found"));
 
-        return buildAuthResponse(user, token);
+        return buildAuthResponse(user, token, "Login successfully");
     }
 
     public AuthResponse getCurrentUser(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new BadRequestException("User not found"));
-        return buildAuthResponse(user, null);
+        return buildAuthResponse(user, null, null);
     }
 
-    private AuthResponse buildAuthResponse(User user, String token) {
+    private AuthResponse buildAuthResponse(User user, String token, String message) {
         return AuthResponse.builder()
+                .message(message)
                 .token(token)
                 .tokenType("Bearer")
                 .userId(user.getId())
