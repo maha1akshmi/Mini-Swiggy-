@@ -1,4 +1,14 @@
-package com.example.swiggy_backend.repository;
+package com.miniswiggy.repository;
 
-public class CartRepository {
+import com.miniswiggy.model.Cart;
+import com.miniswiggy.model.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+@Repository
+public interface CartRepository extends JpaRepository<Cart, Long> {
+    Optional<Cart> findByUser(User user);
+    Optional<Cart> findByUserId(Long userId);
 }
