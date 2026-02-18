@@ -1,4 +1,4 @@
-package com.example.swiggy_backend;
+package com.miniswiggy;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
